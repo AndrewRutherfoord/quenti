@@ -23,6 +23,17 @@ export const env = createEnv({
     METRICS_API_PASSWORD: z.string(),
     RESEND_API_KEY: z.string().optional(),
     EMAIL_SENDER: z.string().optional(),
+    // Full "from" address, e.g. "Quenti <quenti@example.com>". Overrides EMAIL_SENDER.
+    EMAIL_FROM: z.string().optional(),
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.coerce.number().int().optional(),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASSWORD: z.string().optional(),
+    // Defaults to true when SMTP_PORT is 465, otherwise STARTTLS is used if offered
+    SMTP_SECURE: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((s) => (s === undefined ? undefined : s === "true")),
     USE_RESEND_PREVIEWS: z
       .string()
       .optional()

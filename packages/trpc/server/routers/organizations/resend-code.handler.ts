@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { sendConfirmCodeEmail } from "../../../../emails/resend";
+import { sendConfirmCodeEmail } from "@quenti/emails";
 import { getIp } from "../../lib/get-ip";
 import { genOtp } from "../../lib/otp";
 import { isOrganizationAdmin } from "../../lib/queries/organizations";
