@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Point at the db container instead of localhost
+      DATABASE_URL: postgresql://user:password@db:5432/db
+      DIRECT_URL: postgresql://user:password@db:5432/db
+      # Use the regular Postgres driver, not Neon's serverless one
+      NEON: "false"
+    ports:
+      # host:container. The app always listens on 3000 inside the container.
+      # If you change APP_PORT, also update NEXTAUTH_URL / NEXT_PUBLIC_APP_URL.
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db:

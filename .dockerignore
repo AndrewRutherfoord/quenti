@@ -1,0 +1,9 @@
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+**/.vercel
+.env
+.env*.local
+coverage
+lint-results
